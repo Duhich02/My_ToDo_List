@@ -47,31 +47,26 @@
     </div>
   </div>
 </template>
-
-
 <script setup>
+
 
 // IMPORT
 import {ref, onMounted} from "vue";
 import {db} from '@/firebase'
-import { collection, onSnapshot, addDoc, doc, deleteDoc, updateDoc   } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  addDoc, doc,
+  deleteDoc,
+  updateDoc
+} from "firebase/firestore";
+
 
 //FIREBASE REFS
 const todosCollectionRef = collection(db, 'todos');
-
-
 const todos = ref([
-  // {
-  //     id: 'id1',
-  //     content: 'olla!',
-  //     done: false,
-  // },
-  // {
-  //   id: 'id2',
-  //   content: 'salut!',
-  //   done: true,
-  // }
 ])
+
 
 // GET TODOS
 onMounted( ()=>{
@@ -99,11 +94,14 @@ const addTodo = ()=>{
 });
   newtodoContent.value = "";
 }
+
+
 // DELETE TODO
 const deleteTodo = (id) =>{
    deleteDoc(doc(todosCollectionRef, id));
 
 };
+
 
 // TOGGLE DONE
 const toggleDone = id =>{
@@ -112,8 +110,8 @@ const toggleDone = id =>{
     done: !todos.value[index].done,
   });
 }
-
 </script>
+
 
 <style>
 @import "bulma/css/bulma.min.css";
