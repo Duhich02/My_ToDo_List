@@ -1,4 +1,7 @@
 <template>
+  <transition appear
+              @before-enter="beforeEnter"
+              @enter="enter">
   <div class="wrapper-todo">
     <div class="title has-text-centered">My ToDo List!</div>
     <form
@@ -46,7 +49,9 @@
       </div>
     </div>
   </div>
+  </transition>
 </template>
+
 <script setup>
 
 
@@ -58,19 +63,25 @@ import {
   onSnapshot,
   addDoc, doc,
   deleteDoc,
-  updateDoc
+  updateDoc,
+  query,
+  orderBy,
 } from "firebase/firestore";
+import gsap from 'gsap';
 
 
 //FIREBASE REFS
 const todosCollectionRef = collection(db, 'todos');
+const todosCollectionQuery = query(todosCollectionRef, orderBy("date", "desc"));
+
+// TODOS
 const todos = ref([
 ])
 
 
 // GET TODOS
 onMounted( ()=>{
-  onSnapshot(todosCollectionRef, (querySnapshot) => {
+  onSnapshot(todosCollectionQuery, (querySnapshot) => {
     const fbTodos = [];
     querySnapshot.forEach((doc) => {
       const todo ={
@@ -91,6 +102,7 @@ const addTodo = ()=>{
    addDoc(todosCollectionRef, {
     content: newtodoContent.value,
     done: false,
+     date: Date.now(),
 });
   newtodoContent.value = "";
 }
@@ -109,6 +121,21 @@ const toggleDone = id =>{
   updateDoc(doc(todosCollectionRef, id), {
     done: !todos.value[index].done,
   });
+}
+
+
+//ANIMATION
+   const beforeEnter = (el)=>{
+     el.style.opacity = '0'
+     el.style.transform = 'translateY(-100px)'
+    };
+   const enter = (el)=>{
+     gsap.to(el, {
+       duration: 3,
+       y: 0,
+       opacity: 1,
+       delay: 1.5,
+      })
 }
 </script>
 
